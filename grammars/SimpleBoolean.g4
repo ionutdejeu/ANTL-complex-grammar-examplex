@@ -9,7 +9,7 @@ expression
  | NOT expression                                 #notExpression
  | left=expression op=comparator right=expression #comparatorExpression
  | left=expression op=binary right=expression     #binaryExpression
- | boolean_r                                           #boolExpression
+ | boolean_r                                      #boolExpression
  | IDENTIFIER                                     #identifierExpression
  | DECIMAL                                        #decimalExpression
  ;

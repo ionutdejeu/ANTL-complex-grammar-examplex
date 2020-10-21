@@ -9,18 +9,31 @@ from gen.SimpleBooleanLexer import SimpleBooleanLexer
 from gen.SimpleBooleanListener import SimpleBooleanListener
 from antlr4.InputStream import InputStream
 
-class EvalListener(SimpleBooleanListener):
-
-    variables:dict = {}
-    def __init__(self,variables:dict):
-        self.variables = variables
-
-    def exitBinaryExpression(self, ctx:SimpleBooleanParser.BinaryExpressionContext):
-        super().exitBinaryExpression(ctx)
-
 class CustomVisitor(SimpleBooleanVisitor):
+
+    def __init__(self):
+        pass
+
     def visitBinaryExpression(self, ctx:SimpleBooleanParser.BinaryExpressionContext):
-        super().visitBinaryExpression(ctx)
+        print("boolean")
+        print(ctx)
+
+    def visitDecimalExpression(self, ctx:SimpleBooleanParser.DecimalExpressionContext):
+        print('Decimal')
+        print(ctx)
+
+
+class CustomListener(SimpleBooleanListener):
+    def enterBinaryExpression(self, ctx:SimpleBooleanParser.BinaryExpressionContext):
+        print('binary expr')
+
+    def enterComparatorExpression(self, ctx:SimpleBooleanParser.ComparatorExpressionContext):
+        print('comparation expr')
+
+    def enterIdentifierExpression(self, ctx:SimpleBooleanParser.IdentifierExpressionContext):
+        print('identifier')
+
+
 
 if __name__ == '__main__':
     variables = {
@@ -28,7 +41,7 @@ if __name__ == '__main__':
         'A',True,
     }
     exprs = [
-        '1 > 2'
+        'A > 2'
         '1 >= 1.0'
     ]
 
@@ -37,9 +50,10 @@ if __name__ == '__main__':
         lexer = SimpleBooleanLexer(expr_stream)
         stream = CommonTokenStream(lexer)
         parser = SimpleBooleanParser(stream)
+
         tree = parser.parse()
-        printer = CustomVisitor()
-        printer.visit(tree)
-        #walker = ParseTreeWalker()
-        #walker.walk(printer, tree)
+        #printer = CustomVisitor()
+        #printer.visit(tree)
+        walker = ParseTreeWalker()
+        walker.walk(CustomListener(), tree)
 
